@@ -56,4 +56,4 @@ python3 -m viz.replay
 wrangler pages deploy viz --project-name shmulc-jev-game-lab --branch main
 ```
 
-The generated `_headers` permits only the replay scripts/styles by hash and blocks browser network connections. GitHub Actions verifies the offline tests and checks that generated replay files remain current. Publishing to Cloudflare is an explicit CLI step.
+The generated `_headers` permits only the replay scripts/styles by hash and blocks browser network connections. Run the offline tests and regenerate the replay files before publishing. GitHub Actions is disabled for this repository; publishing to Cloudflare is an explicit CLI step.
