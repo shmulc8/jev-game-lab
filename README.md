@@ -2,7 +2,7 @@
 
 Snake and Tetris experiments exploring where typed AI decisions fit inside a game loop. By Shmulik Cohen.
 
-[Watch the recorded Snake runs](https://shmulc8.github.io/jev-game-lab/snake.html) · [Watch the recorded Tetris runs](https://shmulc8.github.io/jev-game-lab/tetris.html)
+[Watch the recorded Snake runs](https://shmulc-jev-game-lab.pages.dev/snake.html) · [Watch the recorded Tetris runs](https://shmulc-jev-game-lab.pages.dev/tetris.html)
 
 Jev is [TypeSafe AI's System One model](https://typesafe.ai/blog/introducing-system-one-models-and-jev). This is an independent experiment, not an official TypeSafe product. The game engines and code baselines own legal-move enumeration and state transitions; Jev chooses among the supplied candidates.
 
@@ -40,8 +40,20 @@ python3 snake/play.py --policy jev --mode features --steps 10 --seed 7 --quiet
 python3 play.py --agent jev --mode rich --pieces 10 --seed 7 --quiet
 ```
 
-No API key, `.env`, private run folder, or live-control web server is included. Do not expose a key-backed game controller as a public server. The static GitHub Pages site serves only the recorded replay files.
+No API key, `.env`, private run folder, or live-control web server is included. Do not expose a key-backed game controller as a public server. The static Cloudflare Pages site serves only the recorded replay files.
 
 ## Publication checks
 
 The publication copy fixes empty replay output, clipped Tetris boards, preview cropping, pipeline alignment, Snake replay-divergence handling, and unsupported composite-mode budget combinations. Offline regressions cover those paths. The archived model runs have not been rerun against the current provider API.
+
+## Publishing the replay site
+
+Cloudflare Pages project: `shmulc-jev-game-lab`. Source remains in this public GitHub repository. To update the static site using an authenticated Wrangler CLI:
+
+```sh
+python3 -m unittest discover -s tests -v
+python3 -m viz.replay
+wrangler pages deploy viz --project-name shmulc-jev-game-lab --branch main
+```
+
+The generated `_headers` permits only the replay scripts/styles by hash and blocks browser network connections. GitHub Actions verifies the offline tests and checks that generated replay files remain current. Publishing to Cloudflare is an explicit CLI step.

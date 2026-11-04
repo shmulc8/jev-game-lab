@@ -3,6 +3,8 @@
 Run: python3 -m viz.replay
 """
 import html
+import hashlib
+import base64
 import json
 import math
 from pathlib import Path
@@ -87,6 +89,15 @@ def build(output=None):
     target = output / "index.html"
     target.write_text(index_page("JEV Game Lab recordings", [(f"{game}.html", f"{game.title()} recordings ({len(links)})") for game, links in groups.items()]))
     generated.append(target)
+    digest = lambda text: base64.b64encode(hashlib.sha256(text.encode("utf-8")).digest()).decode("ascii")
+    policy = ("default-src 'self'; script-src 'self' 'sha256-" + digest(JS) + "'; "
+              "style-src 'self' 'sha256-" + digest(STYLE) + "'; img-src 'self' data:; "
+              "connect-src 'none'; object-src 'none'; base-uri 'self'; "
+              "frame-ancestors 'none'; form-action 'none'")
+    (output / "_headers").write_text("/*\n  Content-Security-Policy: " + policy + "\n"
+        "  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n"
+        "  Referrer-Policy: strict-origin-when-cross-origin\n"
+        "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n", encoding="utf-8")
     return generated
 
 
